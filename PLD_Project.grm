@@ -1,0 +1,106 @@
+"Name"     = 'Safyah N Language'
+"Author"   = 'Safyah Nashaat Ali'
+"About"    = 'This is a PLD Project 2024'
+
+"Start Symbol" = <Program>
+
+! -------------------------------------------------
+! Character Sets
+! -------------------------------------------------
+
+{String Chars} = {Printable} + {HT} - ["]
+{Start of identifier} = [_] + [$] + {Letter}
+! -------------------------------------------------
+! Terminals
+! -------------------------------------------------
+
+Identifier    = {Start of identifier}{AlphaNumeric}*
+Digit = ('+'|'-')?{Digit}('.' {Digit})*
+Bool = 'True'|'False'
+StringLiteral = '"' {String Chars}* '"'
+
+! -------------------------------------------------
+! Rules
+! -------------------------------------------------
+
+! The grammar starts below
+
+<program> ::= <statement_list>
+
+<statement_list> ::= <statement> 
+                     | <statement> <statement_list>
+
+<elseif_clause_list> ::= <elseif_clause>
+                         | <elseif_clause> <elseif_clause_list>
+
+<case_clause_list> ::= <case_clause>
+                  |<case_clause> <case_clause_list>
+
+<statement> ::= <simple_statement> 
+                | <complex_statement>
+
+<simple_statement> ::= <expression_statement> 
+                       | <assignment_statement> 
+                       | <print_statement> 
+                       | <conditional_statement>  
+
+
+<complex_statement> ::= <for_loop_statement> 
+                        | <while_loop_statement> 
+                        | <do_while_loop_statement>
+                        | <switch_statement>
+
+<expression_statement> ::= <expression> '#'
+
+<assignment_statement> ::= <variable> '=' <expression> '#'
+
+<assignment_operator> ::= '=' | '+=' | '-=' | '*=' | '/='
+
+<comparison> ::= '==' | '!=' | '<' | '>' | '<=' | '>='
+
+<print_statement> ::= 'show' ':' '(' <expression> ')' '#'
+
+<conditional_statement> ::= 'if' '(' <expression> ')' '\' '{' <statement_list> '}'
+                            | 'if' '(' <expression> ')' '\' '{' <statement_list> '}' <else_clause>
+                            | 'if' '(' <expression> ')' '\' '{' <statement_list> '}' <elseif_clause_list> <else_clause>
+                            | 'if' '(' <expression> ')' '\' '{' <statement_list> '}' <elseif_clause_list>
+            
+
+<elseif_clause> ::= 'otherwise_if' '(' <expression> ')' '\' '{' <statement_list> '}'
+
+<else_clause> ::= 'otherwise' '\' '{' <statement_list> '}'
+
+<for_loop_statement> ::= 'for' <variable> '(' 'from' <expression> 'to' <expression> ')'  '\'  '{' <statement_list> '}'
+
+<while_loop_statement> ::= 'loop' '{' <statement_list> '}' 'until' ':' '(' <expression> ')' '#'
+
+<do_while_loop_statement> ::= 'do' '{' <statement_list> '}' 'while' ':' '(' <expression> ')' '#'
+
+<switch_statement> ::= 'switch' '(' <expression> ')' '\' '{' <case_clause_list> '}' 
+
+<case_clause> ::= 'case' <expression> ':' <statement_list>
+
+<expression> ::= <phrase>
+                 | <expression> <assignment_operator> <phrase> 
+
+<phrase> ::= <container>
+            | <phrase> <comparison> <container>
+
+<container> ::= <term> 
+                | <container> '+' <term> 
+                | <container> '-' <term> 
+
+
+<term> ::= <factor> 
+          | <term> '*' <factor> 
+          | <term> '/' <factor>
+
+<factor> ::= <variable> 
+            | Digit
+            | Bool
+            | StringLiteral
+            | '(' <expression> ')'
+
+<variable> ::= <identifier>
+
+<identifier> ::= Identifier
